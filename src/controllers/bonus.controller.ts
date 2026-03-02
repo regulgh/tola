@@ -18,14 +18,19 @@ export async function spendUserBonus(
 ): Promise<void> {
   try {
     const amount = Number(req.body?.amount);
+    const requestId = req.header('Idempotency-Key') ?? req.body?.requestId;
 
     if (!Number.isInteger(amount) || amount <= 0) {
       throw createAppError('amount must be a positive integer', 400);
     }
 
-    await spendBonus(req.params.id, amount);
+    if(!requestId || (typeof requestId !== 'string')){
+      throw createAppError('request id is missing', 400);
+    }
 
-    res.json({ success: true });
+    const duplicated = await spendBonus(req.params.id, requestId, amount);
+
+    res.json({ success: true, duplicated });
   } catch (error) {
     next(error);
   }
