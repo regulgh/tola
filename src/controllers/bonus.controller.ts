@@ -42,9 +42,10 @@ export async function enqueueExpireAccrualsJob(
   next: NextFunction,
 ): Promise<void> {
   try {
-    await bonusQueue.add('expireAccruals', {
-      createdAt: new Date().toISOString(),
-    });
+    await bonusQueue.add('expireAccruals', 
+      { createdAt: new Date().toISOString(), },
+      { jobId: 'expire-accruals' },
+    );
 
     res.json({ queued: true });
   } catch (error) {

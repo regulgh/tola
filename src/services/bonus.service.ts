@@ -1,4 +1,4 @@
-import { Transaction } from 'sequelize';
+import { Op, Transaction } from 'sequelize';
 import { BonusTransaction } from '../models/BonusTransaction';
 import { sequelize } from '../db';
 
@@ -16,6 +16,21 @@ export async function getUserBalance(userId: string, transaction: Transaction): 
   const accruals = await BonusTransaction.findAll({
     where: {
       user_id: userId,
+      [Op.or]:[
+        {
+          type: 'accrual',
+
+          expires_at: {
+            [Op.or]: [
+              { [Op.gt]: now, },
+              { [Op.is]: null },
+            ]
+          }
+        },
+        {
+          type: 'spend'
+        }
+      ]
     },
     transaction
   });
