@@ -10,7 +10,7 @@ function createAppError(message: string, status: number): AppError {
   return error;
 }
 
-export async function getUserBalance(userId: string, transaction: Transaction): Promise<number> {
+export async function getUserBalance(userId: string, transaction: Transaction | undefined = undefined): Promise<number> {
   const now = new Date();
 
   const accruals = await BonusTransaction.findAll({

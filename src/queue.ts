@@ -8,7 +8,7 @@ import { BonusTransaction } from './models/BonusTransaction';
 const queueConnection = redis.duplicate();
 
 export const bonusQueue = new Queue('bonusQueue', {
-  connection: queueConnection,
+  connection: queueConnection as any,
   defaultJobOptions: {
     attempts: 3,
     backoff: {
@@ -81,7 +81,7 @@ export function startExpireAccrualsWorker(): Worker {
       }
     },
     {
-      connection: redis.duplicate(),
+      connection: redis.duplicate() as any,
     },
   );
 
